@@ -24,14 +24,23 @@ on:
       - 'maintainers.yaml'
   workflow_dispatch:
 
-permissions:
-  contents: read
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  # Safe to cancel in-progress --apply runs: sync-org-teams is a full
+  # reconcile, so the surviving run writes the latest maintainers.yaml state.
+  cancel-in-progress: true
 
 jobs:
   team-sync:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed # v6.0.0
         with:
           go-version-file: scripts/go.mod
@@ -43,16 +52,21 @@ jobs:
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
+          # Org Members writes do not need repo contents; still pin the token
+          # to this repository so it cannot touch the rest of the installation.
+          repositories: ${{ github.event.repository.name }}
+          permission-members: write
       - name: Reconcile org teams
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          EVENT_NAME: ${{ github.event_name }}
         working-directory: scripts
         run: |
           if [ -z "$GITHUB_TOKEN" ]; then
             echo "GitHub App not configured (set APP_ID var + APP_PRIVATE_KEY secret); skipping (see docs/automation.md)"
             exit 0
           fi
-          if [ "${{ github.event_name }}" = "push" ]; then
+          if [ "$EVENT_NAME" = "push" ]; then
             go run ./cmd/sync-org-teams --maintainers-yaml ../maintainers.yaml --apply
           else
             go run ./cmd/sync-org-teams --maintainers-yaml ../maintainers.yaml

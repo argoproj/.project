@@ -1,0 +1,23 @@
+# Hash-pin every action. Do not add ignores or disable rules unless a finding
+# is a documented, reviewed exception for this repo.
+rules:
+  unpinned-uses:
+    config:
+      policies:
+        "*": hash-pin
+  artipacked:
+    remap:
+      severity: high
+  excessive-permissions:
+    remap:
+      severity: high
+  template-injection:
+    remap:
+      severity: high
+  # Job display names are not a security control.
+  anonymous-definition:
+    disable: true
+  # CI-cost hygiene, not a security control. sync-maintainers.yaml still sets
+  # concurrency so overlapping --apply runs collapse to the latest SHA.
+  concurrency-limits:
+    disable: true
