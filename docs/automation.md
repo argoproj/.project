@@ -71,6 +71,8 @@ workflow mints the token like so:
     app-id: ${{ vars.APP_ID }}
     private-key: ${{ secrets.APP_PRIVATE_KEY }}
     owner: ${{ github.repository_owner }}
+    repositories: ${{ github.event.repository.name }}
+    permission-members: write
 - name: Reconcile org teams
   env:
     GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
@@ -99,8 +101,8 @@ cd scripts && GITHUB_TOKEN=... go run ./cmd/sync-org-teams --maintainers-yaml ..
 - Least privilege: the App only needs the org **Members** permission; it does
   not need access to any repository contents.
 - Dry-run first: keep `--apply` off until a dry-run looks correct.
-- Key rotation: rotate the App private key / PAT periodically and update the
-  secret.
+- Key rotation: rotate the App private key periodically and update the
+  repo secret.
 
 ## Local usage
 

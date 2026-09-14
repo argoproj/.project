@@ -12,13 +12,18 @@ on:
       - 'maintainers.yaml'
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   validate-project:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - uses: cncf/automation/.github/actions/validate-project@cf93440797b1d2178d833d1b1c01e587a486908a
         with:
@@ -26,10 +31,13 @@ jobs:
 
   validate-maintainers:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - uses: cncf/automation/.github/actions/validate-maintainers@cf93440797b1d2178d833d1b1c01e587a486908a
         with:
