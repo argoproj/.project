@@ -57,6 +57,8 @@ maintainers:
           - jessesuen
           - rumstead
           - reggie-k
+          - pjiang-dev
+          - ppapapetrou76
       - name: 'argocd-maintainers'
         members:
           - zachaller
@@ -94,6 +96,8 @@ maintainers:
           - reggie-k
           - jgwest
           - jwinters01
+          - aali309
+          - afzal442
 
       # ---------------- Argo Workflows ----------------
       - name: 'argo-workflows-leads'
