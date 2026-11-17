@@ -51,7 +51,7 @@ repositories:
 
 website: 'https://argoproj.github.io/'
 
-artwork: 'https://landscape.cncf.io/logos/argo.svg'
+artwork: 'https://github.com/cncf/artwork/tree/main/projects/argo'
 
 # Using Argo CD project since it has the most adoption
 adopters:
